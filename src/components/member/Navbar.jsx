@@ -1,7 +1,17 @@
 import { Container, Navbar, Offcanvas, Nav, NavDropdown, Button } from "react-bootstrap"
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { LogOut, reset } from  "../../features/authSlice";
+import { useNavigate } from "react-router-dom";
 const Navbars = () =>{
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+
+  const logout = () => {
+    dispatch(LogOut());
+    dispatch(reset());
+    navigate("/login");
+  };
     return(
         <Container>
         {['lg'].map((expand) => (
@@ -40,7 +50,7 @@ const Navbars = () =>{
                       Update account
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action5">
+                    <NavDropdown.Item onClick={logout}>
                       Logout
                     </NavDropdown.Item>
                   </NavDropdown>
