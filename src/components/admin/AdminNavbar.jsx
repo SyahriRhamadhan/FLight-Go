@@ -1,8 +1,8 @@
-import { Container, Navbar, Offcanvas, Nav, NavDropdown, Button } from "react-bootstrap"
+import { Container, Navbar, Offcanvas, Nav, NavDropdown } from "react-bootstrap"
 import { useDispatch, useSelector } from "react-redux";
 import { LogOut, reset } from  "../../features/authSlice";
 import { useNavigate } from "react-router-dom";
-const Navbars = () =>{
+const NavbarsAdmin = () =>{
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
@@ -17,12 +17,7 @@ const Navbars = () =>{
         {['lg'].map((expand) => (
         <Navbar key={expand} bg="transparant" expand={expand} className="mb-3">
           <Container fluid>
-            <Navbar.Brand href="#">FlightGo</Navbar.Brand>
-            <Nav className="ms-2">
-                <Nav.Link href='/login'>
-                    <Button>Sign-In</Button>
-                </Nav.Link>
-            </Nav>
+            <Navbar.Brand href="#">FlightGo Admin</Navbar.Brand>
             <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} />
             <Navbar.Offcanvas
               id={`offcanvasNavbar-expand-${expand}`}
@@ -36,9 +31,8 @@ const Navbars = () =>{
               </Offcanvas.Header>
               <Offcanvas.Body>
                 <Nav className="justify-content-end flex-grow-1 pe-3">
-                  <Nav.Link href="/Dashboard">Dashboard</Nav.Link>
-                  <Nav.Link href="#action2">Wishlish</Nav.Link>
-                  <Nav.Link href="#action2">History</Nav.Link>
+                  <Nav.Link href="/">Landing Page</Nav.Link>
+                  <Nav.Link href="#action1">Ticket</Nav.Link>
                   <Nav.Link href="#action2">Notification</Nav.Link>
                   <NavDropdown
                     className="ms-5"
@@ -64,4 +58,4 @@ const Navbars = () =>{
     )
 }
 
-export default Navbars
+export default NavbarsAdmin
