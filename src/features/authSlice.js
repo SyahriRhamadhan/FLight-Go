@@ -18,7 +18,7 @@ export const LoginUser = createAsyncThunk("user/LoginUser", async(user, thunkAPI
         return response.data;
     } catch (error) {
         if(error.response){
-            const message = error.response.data.msg;
+            const message = error.response.data.message;
             return thunkAPI.rejectWithValue(message);
         }
     }
@@ -31,14 +31,16 @@ export const getMe = createAsyncThunk("user/getMe", async(_, thunkAPI) => {
         return response.data;
     } catch (error) {
         if(error.response){
-            const message = error.response.data.msg;
+            const message = error.response.data.message;
             return thunkAPI.rejectWithValue(message);
         }
     }
 });
 
+
 export const LogOut = createAsyncThunk("user/LogOut", async() => {
     await axios.delete('https://flightgo-be-server-production.up.railway.app/v1/api/logout');
+    console.log(LogOut)
 });
 
 export const authSlice = createSlice({
@@ -53,8 +55,9 @@ export const authSlice = createSlice({
         });
         builder.addCase(LoginUser.fulfilled, (state, action) =>{
             state.isLoading = false;
-            state.isSuccess = true;
-            state.user = action.payload;
+            state.isSuccess = true; 
+            console.log(action.payload.data)
+            state.user = action.payload.data;
         });
         builder.addCase(LoginUser.rejected, (state, action) =>{
             state.isLoading = false;
@@ -69,7 +72,7 @@ export const authSlice = createSlice({
         builder.addCase(getMe.fulfilled, (state, action) =>{
             state.isLoading = false;
             state.isSuccess = true;
-            state.user = action.payload;
+            state.user = action.payload.data; console.log(action.payload.data)
         });
         builder.addCase(getMe.rejected, (state, action) =>{
             state.isLoading = false;

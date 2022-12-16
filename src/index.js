@@ -1,20 +1,12 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './app/store';
+import ReactDOM from 'react-dom/client';
 import App from './App';
-import axios from "axios";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-axios.defaults.withCredentials = true;
-
-const container = document.getElementById('root');
-const root = createRoot(container);
-
+import "react-toastify/dist/ReactToastify.css";
+// import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <App />
   </React.StrictMode>
 );

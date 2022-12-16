@@ -1,14 +1,15 @@
 import { NavbarsAdmin, ListOrder } from "../../components"
 import { Helmet } from 'react-helmet';
-const Dashboard =()=>{
-    return(
+const Dashboard = () => {
+
+    return (
         <div>
             <Helmet>
                 <title>Dashboard Page</title>
             </Helmet>
             <div>
-                <NavbarsAdmin/>
-                <ListOrder/>
+                <NavbarsAdmin />
+                <ListOrder />
             </div>
         </div>
     )

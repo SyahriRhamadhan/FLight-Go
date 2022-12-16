@@ -1,59 +1,83 @@
 import { Container, Form, Button, Row, Col } from "react-bootstrap"
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
-import { LoginUser, reset } from "../../features/authSlice";
-const Login = () => {
+function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const dispatch = useDispatch();
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const token = localStorage.getItem("token");
     const navigate = useNavigate();
-    const { user, isError, isSuccess, isLoading, message } = useSelector(
-        (state) => state.auth
-    );
-
+    // const [msg, setMsg] = useState('');
     useEffect(() => {
-        if (user || isSuccess) {
-            navigate("/");
-        }
-        dispatch(reset());
-    }, [user, isSuccess, dispatch, navigate]);
+        token ? setIsLoggedIn(true) : setIsLoggedIn(false);
+    }, [token]);
 
-    const Auth = (e) => {
-        e.preventDefault();
-        dispatch(LoginUser({ email, password }));
+    const login = () => {
+        axios
+            .post("https://flightgo-be-server-production.up.railway.app/v1/api/Login", {
+                email: String(email.target.value),
+                password: String(password.target.value),
+            })
+            .then((response) => {
+                console.log(response.data.data.accessToken)
+                console.log(response.data.data.role)
+                localStorage.setItem("token", response.data.data.accessToken);
+                localStorage.setItem("role", response.data.data.role);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 3000);
+                swal("Login Success", {
+                    icon: "success",
+                });
+                navigate("/");
+            })
+            .catch((error) => {
+                if (Array.isArray(error.response.data.message)) {
+                    error.response.data.message.forEach((err) => {
+                        toast(err, {
+                            type: "error",
+                        });
+                    });
+                } else {
+                    toast("email or password are wrong", {
+                        type: "error",
+                    });
+                }
+            });
     };
     return (
         <Container className=""><br /><br /><br /><br /><br />
-            <Row className="mt-5">
-                <Col md className="">
-                    <Form onSubmit={Auth} className="">
-                        {isError && <p className="has-text-centered">{message}</p>}
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Email address</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                            <Form.Text className="text-muted">
-                                We'll never share your email with anyone else.
-                            </Form.Text>
-                        </Form.Group>
+            <ToastContainer />
+            {!isLoggedIn ? (
+                <Row className="mt-5">
+                    <Col md className="">
+                        <Form className="">
+                            <h1>Login Page</h1>
+                            {/* {isError && <p className="has-text-centered">{message}</p>} */}
+                            <Form.Group className="mb-3" controlId="formBasicEmail">
+                                <Form.Label>Email address</Form.Label>
+                                <Form.Control type="email" placeholder="Enter email" onChange={setEmail} />
+                                <Form.Text className="text-muted">
+                                    We'll never share your email with anyone else.
+                                </Form.Text>
+                            </Form.Group>
 
-                        <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                            <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group>
-                        <Button className="text-center m-auto" variant="primary" type="submit">
-                            Sign-In
-                            {isLoading ? "Loading..." : "Login"}
-                        </Button>
-                        <p> Not a FlightGo Member?
-                            <a href="/Register">Register</a>
-                        </p>
-                    </Form>
-                </Col>
-            </Row>
+                            <Form.Group className="mb-3" controlId="formBasicPassword">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control type="password" placeholder="Password" onChange={setPassword} />
+                            </Form.Group>
+                            <Button onClick={login} className="text-center m-auto" variant="primary" > Login
+                            </Button>
+                            <p> Not a FlightGo Member?
+                                <a href="/Register">Register</a>
+                            </p>
+                        </Form>
+                    </Col>
+                </Row>
+            ) : null}
         </Container>
 
     )

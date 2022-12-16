@@ -1,17 +1,22 @@
 import { Container, Navbar, Offcanvas, Nav, NavDropdown } from "react-bootstrap"
-import { useDispatch, useSelector } from "react-redux";
-import { LogOut, reset } from  "../../features/authSlice";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const NavbarsAdmin = () =>{
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const token = localStorage.getItem("token");
 
-  const logout = () => {
-    dispatch(LogOut());
-    dispatch(reset());
-    navigate("/login");
-  };
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      token ? setIsLoggedIn(true) : setIsLoggedIn(false);
+    }, [token]);
+
+    const logout = () => {
+      setIsLoggedIn(false);
+      localStorage.removeItem("token");
+      navigate('/')
+      window.location.reload();
+    };
     return(
         <Container>
         {['lg'].map((expand) => (
@@ -45,7 +50,7 @@ const NavbarsAdmin = () =>{
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={logout}>
-                      Logout
+                        Logout
                     </NavDropdown.Item>
                   </NavDropdown>
                 </Nav>
